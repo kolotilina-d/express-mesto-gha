@@ -24,8 +24,8 @@ app.use((req, res, next) => {
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
 
-app.all('/api/*', (req, res) => {
-  res.status(404).json({ error: 'Not Found' });
+app.all('/*', (req, res) => {
+  res.status(404).json({ message: 'Not Found' });
 });
 
 app.listen(PORT);
