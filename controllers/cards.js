@@ -31,9 +31,9 @@ module.exports.deleteCard = (req, res) => {
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
-        res.status(404).send({ message: 'Некорректный _id карточки' });
+        res.status(400).send({ message: 'Некорректный _id карточки' });
       } else {
-        res.status(400).send({ message: 'Карточка с указанным _id не найдена' });
+        res.status(404).send({ message: 'Карточка с указанным _id не найдена' });
       }
     });
 };
@@ -47,9 +47,9 @@ module.exports.likeCard = (req, res) => {
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
-        res.status(404).send({ message: 'Некорректный _id карточки' });
+        res.status(400).send({ message: 'Некорректный _id карточки' });
       } else {
-        res.status(400).send({ message: 'Карточка с указанным _id не найдена' });
+        res.status(404).send({ message: 'Карточка с указанным _id не найдена' });
       }
     });
 };
@@ -63,9 +63,9 @@ module.exports.dislikeCard = (req, res) => {
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
-        res.status(404).send({ message: 'Некорректный _id карточки' });
+        res.status(400).send({ message: 'Некорректный _id карточки' });
       } else {
-        res.status(400).send({ message: 'Карточка с указанным _id не найдена' });
+        res.status(404).send({ message: 'Карточка с указанным _id не найдена' });
       }
     });
 };

@@ -33,7 +33,7 @@ module.exports.createUser = (req, res) => {
     .then((user) => res.status(201).send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Некорректрый _id пользователя' });
+        res.status(400).send({ message: err.message });
       } else {
         res.status(500).send({ message: 'На сервере произошла ошибка' });
       }
@@ -43,11 +43,11 @@ module.exports.createUser = (req, res) => {
 module.exports.editUserData = (req, res) => {
   const { name, about } = req.body;
   if (req.user._id) {
-    User.findByIdAndUpdate(req.user._id, { name, about }, { new: true })
+    User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
       .then((user) => res.send(user))
       .catch((err) => {
         if (err.name === 'ValidationError') {
-          res.status(400).send({ message: 'Некорректрый _id пользователя' });
+          res.status(400).send({ message: err.message });
         } else {
           res.status(404).send({ message: 'Пользователь не найден в базе' });
         }
