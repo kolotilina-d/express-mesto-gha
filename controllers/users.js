@@ -58,17 +58,14 @@ module.exports.editUserData = (req, res) => {
 
 module.exports.editAvatar = (req, res) => {
   const { avatar } = req.body;
-  if (req.user._id) {
-    User.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
-      .then((user) => res.send(user))
-      .catch((err) => {
-        if (err.name === 'ValidationError') {
-          res.status(httpConstans.HTTP_STATUS_BAD_REQUEST).send({ message: err.message });
-        } else {
-          res.status(httpConstans.HTTP_STATUS_NOT_FOUND).send({ message: 'Пользователь не найден в базе' });
-        }
-      });
-  } else {
-    res.status(httpConstans.HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
-  }
+  User.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
+    .orFail()
+    .then((user) => res.status(httpConstans.HTTP_STATUS_OK).send(user))
+    .catch((err) => {
+      if (err instanceof mongoose.Error.ValidationError) {
+        res.status(httpConstans.HTTP_STATUS_BAD_REQUEST).send({ message: err.message });
+      } else {
+        res.status(httpConstans.HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
+      }
+    });
 };
