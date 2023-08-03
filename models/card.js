@@ -11,6 +11,12 @@ const cardSchema = new mongoose.Schema(
     link: {
       type: String,
       required: [true, 'Поле должно быть заполнено'],
+      validate: {
+        validator(url) {
+          return /(?:https?):\/\/(\w+:?\w*)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%!\-/]))?/.test(url);
+        },
+        message: 'Введите корректный URL',
+      },
     },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
@@ -21,6 +27,7 @@ const cardSchema = new mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'user',
+        default: [],
       },
     ],
     createAt: {

@@ -17,6 +17,12 @@ const userSchema = new mongoose.Schema(
     avatar: {
       type: String,
       required: [true, 'Поле должно быть заполнено'],
+      validate: {
+        validator(url) {
+          return /(?:https?):\/\/(\w+:?\w*)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%!\-/]))?/.test(url);
+        },
+        message: 'Введите корректный URL',
+      },
     },
   },
   { versionKey: false },
