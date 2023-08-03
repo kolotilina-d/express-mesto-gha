@@ -18,9 +18,10 @@ module.exports.getUserById = (req, res) => {
       res.status(httpConstans.HTTP_STATUS_OK).send(user);
     })
     .catch((err) => {
+      console.log(err);
       if (err instanceof mongoose.Error.CastError) {
         res.status(httpConstans.HTTP_STATUS_BAD_REQUEST).send({ message: 'Некорректрый _id пользователя' });
-      } else if (err.message === 'NotValidId') {
+      } else if (err instanceof mongoose.Error.DocumentNotFoundError) {
         res.status(httpConstans.HTTP_STATUS_NOT_FOUND).send({ message: 'Пользователь не найден в базе' });
       } else {
         res.status(httpConstans.HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'На сервере прозошла ошибка' });
