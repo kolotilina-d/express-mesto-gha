@@ -33,7 +33,7 @@ module.exports.createUser = (req, res) => {
   User.create({ name, about, avatar })
     .then((user) => res.status(httpConstans.HTTP_STATUS_CREATED).send(user))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err instanceof mongoose.Error.ValidationError) {
         res.status(httpConstans.HTTP_STATUS_BAD_REQUEST).send({ message: err.message });
       } else {
         res.status(httpConstans.HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
@@ -44,7 +44,6 @@ module.exports.createUser = (req, res) => {
 module.exports.editUserData = (req, res) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
-    .orFail()
     .then((user) => res.status(httpConstans.HTTP_STATUS_OK).send(user))
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
@@ -58,7 +57,6 @@ module.exports.editUserData = (req, res) => {
 module.exports.editAvatar = (req, res) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
-    .orFail()
     .then((user) => res.status(httpConstans.HTTP_STATUS_OK).send(user))
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {

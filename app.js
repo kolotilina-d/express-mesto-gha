@@ -1,3 +1,4 @@
+const httpConstans = require('http2').constants;
 const express = require('express');
 const mongoose = require('mongoose');
 
@@ -24,7 +25,7 @@ app.use((req, res, next) => {
 app.use(router);
 
 app.all('/*', (req, res) => {
-  res.status(404).json({ message: 'Not Found' });
+  res.status(httpConstans.HTTP_STATUS_NOT_FOUND).json({ message: 'Not Found' });
 });
 
 app.listen(PORT);

@@ -16,7 +16,7 @@ module.exports.postCard = (req, res) => {
       res.status(httpConstans.HTTP_STATUS_CREATED).send(card);
     })
     .catch((err) => {
-      if (err.message) {
+      if (err instanceof mongoose.Error.ValidationError) {
         res.status(httpConstans.HTTP_STATUS_BAD_REQUEST).send({ message: err.message });
       } else {
         res.status(httpConstans.HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
@@ -26,15 +26,17 @@ module.exports.postCard = (req, res) => {
 
 module.exports.deleteCard = (req, res) => {
   Card.findByIdAndDelete(req.params.cardId)
-    .orFail(new Error('NotValidId'))
+    .orFail()
     .then(() => {
       res.status(httpConstans.HTTP_STATUS_OK).send({ message: 'Карточка удалена' });
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
         res.status(httpConstans.HTTP_STATUS_BAD_REQUEST).send({ message: 'Некорректный _id карточки' });
-      } else {
+      } else if (err instanceof mongoose.Error.DocumentNotFoundError) {
         res.status(httpConstans.HTTP_STATUS_NOT_FOUND).send({ message: 'Карточка с указанным _id не найдена' });
+      } else {
+        res.status(httpConstans.HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
       }
     });
 };
@@ -49,8 +51,10 @@ module.exports.likeCard = (req, res) => {
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
         res.status(httpConstans.HTTP_STATUS_BAD_REQUEST).send({ message: 'Некорректный _id карточки' });
-      } else {
+      } else if (err.message === 'NotValidId') {
         res.status(httpConstans.HTTP_STATUS_NOT_FOUND).send({ message: 'Карточка с указанным _id не найдена' });
+      } else {
+        res.status(httpConstans.HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
       }
     });
 };
@@ -65,8 +69,10 @@ module.exports.dislikeCard = (req, res) => {
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
         res.status(httpConstans.HTTP_STATUS_BAD_REQUEST).send({ message: 'Некорректный _id карточки' });
-      } else {
+      } else if (err.message === 'NotValidId') {
         res.status(httpConstans.HTTP_STATUS_NOT_FOUND).send({ message: 'Карточка с указанным _id не найдена' });
+      } else {
+        res.status(httpConstans.HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
       }
     });
 };
