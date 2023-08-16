@@ -1,8 +1,34 @@
 const router = require('express').Router();
-const userRouter = require('./users');
+const { celebrate, Joi } = require('celebrate');
+const usersRouter = require('./users');
 const cardsRouter = require('./cards');
+const { createUser, login } = require('../controllers/users');
+const { auth } = require('../middlewares/auth');
+const { urlRegEx } = require('../utils/constans');
+const NotFoundError = require('../utils/NotFound');
 
-router.use('/users', userRouter);
+router.post('/signup', celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30),
+    avatar: Joi.string().pattern(urlRegEx),
+    email: Joi.string().required().email(),
+    password: Joi.string().required().min(8),
+  }).unknown(true),
+}), createUser);
+
+router.post('/signin', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required().min(8),
+  }).unknown(true),
+}), login);
+
+router.use(auth);
+router.use('/', usersRouter);
 router.use('/cards', cardsRouter);
+router.all('/*', (req, res, next) => {
+  next(new NotFoundError('Страница не найдена'));
+});
 
 module.exports = router;
