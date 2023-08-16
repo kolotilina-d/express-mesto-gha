@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const UnautorizedError = require('../utils/Unauthorized');
-const { urlRegEx } = require('../utils/constans');
+const { urlRegexp } = require('../utils/constans');
 
 const userSchema = new mongoose.Schema(
   {
@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       validate: {
         validator(url) {
-          return urlRegEx.test(url);
+          return urlRegexp.test(url);
         },
         message: 'Введите корректный URL',
       },

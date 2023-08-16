@@ -4,20 +4,20 @@ const { celebrate, Joi } = require('celebrate');
 const {
   getCards, postCard, deleteCard, likeCard, dislikeCard,
 } = require('../controllers/cards');
-const { urlRegEx } = require('../utils/constans');
+const { urlRegexp } = require('../utils/constans');
 
 router.get('/', getCards);
 
 router.post('/', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
-    link: Joi.string().required().pattern(urlRegEx),
+    link: Joi.string().required().pattern(urlRegexp),
   }).unknown(true),
 }), postCard);
 
 router.delete('/:cardId', celebrate({
   params: Joi.object().keys({
-    userId: Joi.string().length(24).hex().required(),
+    cardId: Joi.string().length(24).hex().required(),
   }),
 }), deleteCard);
 
