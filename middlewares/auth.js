@@ -6,7 +6,8 @@ const { JWT_SECRET = 'secret_key' } = process.env;
 module.exports.auth = (req, res, next) => {
   const { authorization } = req.headers;
   if (!authorization || !authorization.startsWith('Bearer ')) {
-    throw new UnauthorizedError('Необходима авторизация');
+    // throw new UnauthorizedError('Необходима авторизация');
+    next(new UnauthorizedError('Необходима авторизация'));
   }
   const token = authorization.replace('Bearer ', '');
   let payload;
@@ -14,7 +15,8 @@ module.exports.auth = (req, res, next) => {
   try {
     payload = jwt.verify(token, JWT_SECRET);
   } catch (err) {
-    throw new UnauthorizedError('Необходима авторизация');
+    // throw new UnauthorizedError('Необходима авторизация');
+    next(new UnauthorizedError('Необходима авторизация'));
   }
   req.user = payload;
   next();
